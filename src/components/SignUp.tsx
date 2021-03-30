@@ -1,4 +1,5 @@
-import * as React from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -13,17 +14,10 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © '}
-      <Link color="inherit" href="https://material-ui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
+interface userSignUpInfo {
+  name: string;
+  email: string;
+  password: string;
 }
 
 const useStyles = makeStyles(theme => ({
@@ -48,6 +42,28 @@ const useStyles = makeStyles(theme => ({
 
 const SignUp = () => {
   const classes = useStyles();
+  const [values, setValues] = useState<userSignUpInfo | null>({
+    name: '',
+    email: '',
+    password: '',
+  });
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    setValues({ ...values, [name]: value });
+  };
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const { name, email, password } = values;
+    const users = { name, email, password };
+    const header = {
+      'Content-type': 'application/json',
+    };
+    axios
+      .post('/api/signup', users, { headers: header })
+      .then(res => console.log(res))
+      .catch(err => console.log(err));
+  };
 
   return (
     <Container component="main" maxWidth="xs">
@@ -59,29 +75,21 @@ const SignUp = () => {
         <Typography component="h1" variant="h5">
           Sign up
         </Typography>
-        <form className={classes.form} noValidate>
+        <form className={classes.form} onSubmit={handleSubmit} noValidate>
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12}>
               <TextField
                 autoComplete="fname"
-                name="firstName"
+                name="name"
                 variant="outlined"
                 required
                 fullWidth
-                id="firstName"
-                label="First Name"
+                id="Name"
+                label="이름"
+                value={values.name}
+                inputProps={{ maxLength: 5 }}
+                onChange={handleChange}
                 autoFocus
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                id="lastName"
-                label="Last Name"
-                name="lastName"
-                autoComplete="lname"
               />
             </Grid>
             <Grid item xs={12}>
@@ -90,9 +98,11 @@ const SignUp = () => {
                 required
                 fullWidth
                 id="email"
-                label="Email Address"
+                label="이메일"
                 name="email"
+                value={values.email}
                 autoComplete="email"
+                onChange={handleChange}
               />
             </Grid>
             <Grid item xs={12}>
@@ -101,9 +111,11 @@ const SignUp = () => {
                 required
                 fullWidth
                 name="password"
-                label="Password"
+                label="비밀번호"
+                value={values.password}
                 type="password"
                 id="password"
+                onChange={handleChange}
                 autoComplete="current-password"
               />
             </Grid>
@@ -132,9 +144,6 @@ const SignUp = () => {
           </Grid>
         </form>
       </div>
-      <Box mt={5}>
-        <Copyright />
-      </Box>
     </Container>
   );
 };

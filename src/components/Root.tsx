@@ -1,11 +1,13 @@
-import * as React from 'react';
+import React from 'react';
 import { BrowserRouter, Route } from 'react-router-dom';
+import SignIn from './Signin';
 import SignUp from './SignUp';
 
 const Root = () => (
   <BrowserRouter>
-    <Route path="/" component={SignUp} />
-    <Route path="/signup" component={SignUp} />
+    <Route exact path="/" component={SignIn} />
+    <Route exact path="/signup" component={SignUp} />
+    <Route exact path="/login" component={SignIn} />
   </BrowserRouter>
 );
 
