@@ -5,8 +5,6 @@ const path = require('path');
 
 module.exports = {
   // Webpack의 출력물에서 디버깅을 하기위해 소스 맵을 허용합니다.
-  devtool: 'source-map',
-
   entry: './src/index.tsx',
   output: {
     path: path.join(__dirname, 'dist'),

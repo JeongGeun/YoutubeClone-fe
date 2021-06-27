@@ -1,7 +1,25 @@
-import * as React from 'react';
+import React from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import HomeAppBar from './ui/home/AppBar';
+import HomeDrawer from './ui/home/Drawer';
+import Main from './ui/home/Main';
 
-const Home = () => {
-  return <>Home</>;
-};
+const useStyles = makeStyles(theme => ({
+  root: {
+    display: 'flex',
+  },
+}));
 
-export default Home;
+export default function Home() {
+  const classes = useStyles();
+
+  return (
+    <div className={classes.root}>
+      <CssBaseline />
+      <HomeAppBar />
+      <HomeDrawer />
+      <Main />
+    </div>
+  );
+}

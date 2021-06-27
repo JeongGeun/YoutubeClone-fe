@@ -12,8 +12,17 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import axios from 'axios';
+import { signInUser } from './actions/user_action';
+import { useDispatch } from 'react-redux';
 
+export interface BaseAction<TPayload> {
+  type: string;
+  payload: TPayload;
+}
+
+export interface Dispatch {
+  <T extends BaseAction<any>>(action: T): T extends BaseAction<Promise<infer R>> ? Promise<R> : T;
+}
 interface userLoginInfo {
   email: string;
   password: string;
@@ -43,9 +52,9 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const SignIn = ({ onSubmit }: formProps) => {
+const SignIn = ({ onSubmit }: formProps, { history }) => {
   const classes = useStyles();
-
+  const dispatch = useDispatch<Dispatch>();
   const [values, setValues] = useState<userLoginInfo | null>({ email: '', password: '' });
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -56,10 +65,9 @@ const SignIn = ({ onSubmit }: formProps) => {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    axios
-      .post('/api/auth', values)
-      .then(res => console.log(res))
-      .catch(err => console.log(err));
+    dispatch(signInUser(values)).then(res => {
+      history.push('/');
+    });
   };
 
   return (
