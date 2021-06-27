@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../..';
 import VideoItem from '../common/VideoItem';
+import axios from 'axios';
 const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
@@ -33,10 +34,42 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+interface videoItemProps {
+  title: string;
+  viewCount: number;
+  contentUrl: string;
+  channelName: string;
+  uploadDate: string;
+  thumbNailUrl: string;
+}
+
 export default function Main() {
   const classes = useStyles();
   const open = useSelector((state: RootState) => state.Toggle.open);
+  const [playLists, setplayLists] = useState<videoItemProps[] | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        setError(null);
+        setplayLists(null);
+        setLoading(true);
+        const response = await axios.get('/api/videos');
+        console.log(response);
+        setplayLists(response.data);
+      } catch (error) {
+        setError(error);
+      }
+      setLoading(false);
+    };
+    fetchUsers();
+  }, []);
+
+  if (loading) return <div>로딩중..</div>;
+  if (error) return <div>에러가 발생했습니다</div>;
+  if (!playLists) return null;
   return (
     <main
       className={clsx(classes.content, {
@@ -44,14 +77,18 @@ export default function Main() {
       })}
     >
       <div className={classes.drawerHeader} />
-      <VideoItem
-        thumbNailUrl="https://i.ytimg.com/vi/uPeLND1VgYU/hq720.jpg?sqp=-oaymwEcCNAFEJQDSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLAUxxzTPBXbLmJjNYkycAxk7unB_Q"
-        title="넌 이미 죽어있다 LCK TI IS COMMING"
-        contentUrl="#"
-        viewCount={10}
-        channelName="LCK"
-        uploadDate="17"
-      ></VideoItem>
+
+      {playLists.map((item, index) => (
+        <VideoItem
+          key={index}
+          thumbNailUrl={item.thumbNailUrl}
+          contentUrl={item.contentUrl}
+          title={item.title}
+          viewCount={item.viewCount}
+          uploadDate={item.uploadDate}
+          channelName={item.channelName}
+        ></VideoItem>
+      ))}
     </main>
   );
 }

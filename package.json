@@ -37,6 +37,7 @@
     "axios": "^0.21.1",
     "clean-webpack-plugin": "^3.0.0",
     "html-webpack-plugin": "^4.5.1",
+    "msw": "^0.30.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-redux": "^7.2.3",
@@ -44,6 +45,10 @@
     "redux": "^4.0.5",
     "redux-promise": "^0.6.0",
     "redux-thunk": "^2.3.0",
-    "source-map": "^0.7.3"
+    "source-map": "^0.7.3",
+    "yarn": "^1.22.10"
+  },
+  "msw": {
+    "workerDirectory": "dist"
   }
 }

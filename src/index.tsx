@@ -15,12 +15,16 @@ declare global {
   }
 }
 
+if (process.env.NODE_ENV === 'development') {
+  const { worker } = require('./mocks/browser');
+  worker.start();
+}
+
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const store = createStore(
   rootReducer,
   composeEnhancers(applyMiddleware(promiseMiddleware, ReduxThunk)),
 );
-console.log(store.getState());
 
 ReactDOM.render(
   <Provider store={store}>
